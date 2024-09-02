@@ -7,9 +7,6 @@ package vista;
 import controlador.chatbotc;
 import java.awt.Color;
 import java.awt.event.ActionListener;
-import javax.swing.text.SimpleAttributeSet;
-import javax.swing.text.StyleConstants;
-import javax.swing.text.StyledDocument;
 import modelo.chatbotm;
 
 /**
@@ -38,7 +35,6 @@ public class vista extends javax.swing.JFrame {
 
         btnEnviar = new javax.swing.JButton();
         txtCampoPre = new javax.swing.JTextField();
-        jLabel1 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
         txpConver = new javax.swing.JTextPane();
 
@@ -46,7 +42,11 @@ public class vista extends javax.swing.JFrame {
 
         btnEnviar.setText("Enviar");
 
-        jLabel1.setText("jLabel1");
+        txtCampoPre.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtCampoPreActionPerformed(evt);
+            }
+        });
 
         txpConver.setEditable(false);
         jScrollPane2.setViewportView(txpConver);
@@ -60,25 +60,15 @@ public class vista extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(txtCampoPre, javax.swing.GroupLayout.DEFAULT_SIZE, 780, Short.MAX_VALUE)
                     .addComponent(jScrollPane2))
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(47, 47, 47)
-                        .addComponent(jLabel1))
-                    .addGroup(layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnEnviar, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnEnviar, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(52, 52, 52)
-                        .addComponent(jLabel1))
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 483, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap()
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 483, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(txtCampoPre, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -88,6 +78,10 @@ public class vista extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void txtCampoPreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCampoPreActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtCampoPreActionPerformed
 
     /**
      * @param args the command line arguments
@@ -120,19 +114,18 @@ public class vista extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnEnviar;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTextPane txpConver;
     private javax.swing.JTextField txtCampoPre;
     // End of variables declaration//GEN-END:variables
 
-   public String getPregunta() {
+    public String getPregunta() {
         return txtCampoPre.getText();
+
     }
 
     public void mostrarRespuesta(String respuesta) {
-        appendStyledText("Chatbot: " + respuesta + "\n", Color.RED);
-        txtCampoPre.setText(""); // Limpiar el campo de texto después de enviar la pregunta
+        textoConver("Chatbot: " + respuesta + "\n");
     }
 
     public void enviarPregunta(ActionListener listenEnviar) {
@@ -140,20 +133,17 @@ public class vista extends javax.swing.JFrame {
     }
 
     public void mostrarRespuestaUsuario(String entrada) {
-        appendStyledText("Usuario: " + entrada + "\n", Color.BLUE);
-        txtCampoPre.setText(""); // Limpiar el campo de texto después de enviar la pregunta
+        textoConver("Usuario: " + entrada + "\n");
     }
 
-    private void appendStyledText(String text, Color color) {
-        StyledDocument doc = txpConver.getStyledDocument();
-        SimpleAttributeSet attrs = new SimpleAttributeSet();
-        StyleConstants.setForeground(attrs, color);
-        try {
-            doc.insertString(doc.getLength(), text, attrs);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    private void textoConver(String text) {
+        String currentText = txpConver.getText(); // Obtén el texto actual
+        txpConver.setText(currentText + text);    // Añade el nuevo texto al final
     }
 
-    
+    public void limpiarCampoTexto() {
+        txtCampoPre.setText("");
+
+    }
+
 }

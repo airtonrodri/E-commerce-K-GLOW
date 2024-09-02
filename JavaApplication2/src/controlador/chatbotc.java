@@ -14,6 +14,7 @@ import vista.vista;
  * @author LAB-USR-LNORTE
  */
 public class chatbotc {
+
     private chatbotm Modelo;
     private vista Vista;
 
@@ -27,9 +28,11 @@ public class chatbotc {
 
     private void procesarPregunta() {
         String pregunta = Vista.getPregunta();
-        Vista.mostrarRespuestaUsuario(pregunta); 
+        Vista.mostrarRespuestaUsuario(pregunta);
         String respuesta = Modelo.getRespuesta(pregunta);
         Vista.mostrarRespuesta(respuesta);
+        Vista.limpiarCampoTexto();
+
     }
-    
+
 }
