@@ -137,8 +137,8 @@ public class vista extends javax.swing.JFrame {
     }
 
     private void textoConver(String text) {
-        String currentText = txpConver.getText(); // Obtén el texto actual
-        txpConver.setText(currentText + text);    // Añade el nuevo texto al final
+        String currentText = txpConver.getText(); 
+        txpConver.setText(currentText + text);    
     }
 
     public void limpiarCampoTexto() {
