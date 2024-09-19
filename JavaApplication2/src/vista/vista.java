@@ -149,7 +149,7 @@ public class vista extends javax.swing.JFrame {
     }
 
     public void mostrarRespuesta(String respuesta) {
-        textoConver("Chatbot: " + respuesta + "\n", Color.RED); // Texto del chatbot en rojo
+        textoConver("Glowy: " + respuesta + "\n", Color.RED); // Texto del chatbot en rojo
     }
 
     public void mostrarRespuestaUsuario(String entrada) {
