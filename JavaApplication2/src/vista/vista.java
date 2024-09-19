@@ -7,6 +7,9 @@ package vista;
 import controlador.chatbotc;
 import java.awt.Color;
 import java.awt.event.ActionListener;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyledDocument;
 import modelo.chatbotm;
 
 /**
@@ -86,11 +89,6 @@ public class vista extends javax.swing.JFrame {
     /**
      * @param args the command line arguments
      */
-    private void mostrarBienvenida() {
-        mostrarRespuesta("Bienvenido a K-Beauty!");
-
-    }
-
     public static void main(String args[]) {
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
@@ -119,31 +117,42 @@ public class vista extends javax.swing.JFrame {
     private javax.swing.JTextField txtCampoPre;
     // End of variables declaration//GEN-END:variables
 
-    public String getPregunta() {
-        return txtCampoPre.getText();
-
-    }
-
-    public void mostrarRespuesta(String respuesta) {
-        textoConver("Chatbot: " + respuesta + "\n");
-    }
-
+    // Método para agregar un ActionListener al botón enviar
     public void enviarPregunta(ActionListener listenEnviar) {
         btnEnviar.addActionListener(listenEnviar);
     }
 
-    public void mostrarRespuestaUsuario(String entrada) {
-        textoConver("Usuario: " + entrada + "\n");
+    // Métodos para obtener y mostrar la pregunta/respuesta
+    public String getPregunta() {
+        return txtCampoPre.getText();
     }
 
-    private void textoConver(String text) {
-        String currentText = txpConver.getText(); 
-        txpConver.setText(currentText + text);    
+    public void mostrarRespuesta(String respuesta) {
+        textoConver("Chatbot: " + respuesta + "\n", Color.RED); // Texto del chatbot en rojo
+    }
+
+    public void mostrarRespuestaUsuario(String entrada) {
+        textoConver("Usuario: " + entrada + "\n", Color.BLUE); // Texto del usuario en azul
+    }
+
+    private void textoConver(String text, Color color) {
+        StyledDocument doc = txpConver.getStyledDocument();
+        SimpleAttributeSet atributos = new SimpleAttributeSet();
+        StyleConstants.setForeground(atributos, color);
+
+        try {
+            doc.insertString(doc.getLength(), text, atributos);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void limpiarCampoTexto() {
         txtCampoPre.setText("");
+    }
 
+    private void mostrarBienvenida() {
+        mostrarRespuesta("Bienvenido a K-Beauty!");
     }
 
 }
