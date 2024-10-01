@@ -217,4 +217,6 @@ public class vista extends javax.swing.JFrame {
         lblFacebook.setCursor(new Cursor(Cursor.HAND_CURSOR));
     }
 ;
+
+
 }
