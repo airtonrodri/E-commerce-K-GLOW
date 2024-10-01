@@ -14,8 +14,13 @@ Este Proyecto consiste en el diseño, desarrollo y despliegue de una aplicación
 - **Backend**
   - Java
   - Spring Boot
-  - MySQL
   - Maven
+
+- **Base de datos**
+  - MySQL
+
+- **Sistema de control de versiones**
+  - Git
 
 
 ## **Características Principales**
