@@ -126,45 +126,47 @@ public class vistaContorno extends javax.swing.JFrame {
     private javax.swing.JLabel lblImagen;
     // End of variables declaration//GEN-END:variables
 
-    public void setImageIcon(ImageIcon imageIcon) {
-        lblImagen.setIcon(imageIcon);
-        lblImagen.setText("");
-    }
+ public void setImageIcon(ImageIcon imageIcon) {
+    // Muestra la imagen dada en el JLabel lblImagen.
+    lblImagen.setIcon(imageIcon);
+    lblImagen.setText(""); // Elimina cualquier texto previo en el JLabel.
+}
 
-    public Color showColorChooser() {
-        return JColorChooser.showDialog(this, "Elige un color para los labios", Color.RED);
-    }
+public Color showColorChooser() {
+    // Muestra un selector de color para que el usuario elija un color para los labios.
+    return JColorChooser.showDialog(this, "Elige un color para los labios", Color.RED);
+}
 
-    public void showMessage(String primero_carga_una_imagen) {
-        JOptionPane.showMessageDialog(this, "Primero, carga una imagen");
-    }
+public void showMessage(String primero_carga_una_imagen) {
+    // Muestra un mensaje emergente (JOptionPane) con el texto dado.
+    JOptionPane.showMessageDialog(this, "Primero, carga una imagen");
+}
 
-    public JButton getLoadButton() {
-        return btnAgregarImagen;
-    }
+public JButton getLoadButton() {
+    // Retorna el botón para agregar una imagen.
+    return btnAgregarImagen;
+}
 
-    public JButton getColorButton() {
-        return btnContorno;
-    }
-    
-    
-    
+public JButton getColorButton() {
+    // Retorna el botón para aplicar contorno o color.
+    return btnContorno;
+}
+
 private void initListeners() {
+    // Añade la acción de cargar imagen al botón btnAgregarImagen.
     btnAgregarImagen.addActionListener(e -> {
-        JFileChooser fileChooser = new JFileChooser();
+        JFileChooser fileChooser = new JFileChooser(); // Abre explorador de archivos.
         int returnValue = fileChooser.showOpenDialog(vistaContorno.this);
         if (returnValue == JFileChooser.APPROVE_OPTION) {
+            // Si el usuario selecciona un archivo:
             File selectedFile = fileChooser.getSelectedFile();
             try {
-                originalImage = ImageIO.read(selectedFile); // Carga la imagen original
-                setImageIcon(new ImageIcon(originalImage)); // Muestra la imagen en lblImagen
+                originalImage = ImageIO.read(selectedFile); // Carga la imagen seleccionada.
+                setImageIcon(new ImageIcon(originalImage)); // Muestra la imagen cargada en lblImagen.
                 
-                // Deshabilitar los botones después de cargar la imagen
+                // Habilita los botones para aplicar el contorno o color después de cargar una imagen.
                 btnAgregarImagen.setEnabled(true);
                 btnContorno.setEnabled(true);
-                
-                // Puedes habilitar los botones de nuevo si es necesario aquí
-                // por ejemplo, después de aplicar contorno
             } catch (Exception ex) {
                 showMessage("Error al cargar la imagen: " + ex.getMessage());
             }
@@ -173,18 +175,21 @@ private void initListeners() {
         }
     });
 
+    // Añade la acción de aplicar color o contorno al botón btnContorno.
     btnContorno.addActionListener(e -> {
         if (originalImage == null) {
+            // Si no hay imagen cargada, muestra un mensaje.
             showMessage("Primero, carga una imagen");
             return;
         }
 
-        Color color = showColorChooser();
+        Color color = showColorChooser(); // Muestra el selector de color.
         if (color != null) {
-            editedImage = applyContour(originalImage, color); // Aplica el contorno
-            setImageIcon(new ImageIcon(editedImage)); // Muestra la imagen editada
+            // Si se selecciona un color, aplica el contorno a la imagen.
+            editedImage = applyContour(originalImage, color);
+            setImageIcon(new ImageIcon(editedImage)); // Muestra la imagen editada.
             
-            // Habilitar los botones nuevamente después de aplicar el contorno
+            // Reactiva los botones después de aplicar el contorno.
             btnAgregarImagen.setEnabled(true);
             btnContorno.setEnabled(true);
         } else {
@@ -194,40 +199,41 @@ private void initListeners() {
 }
 
 private BufferedImage applyContour(BufferedImage original, Color lipColor) {
+    // Aplica un contorno a la imagen usando el color dado.
     int width = original.getWidth();
     int height = original.getHeight();
     BufferedImage contourImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 
-    // Definición de un kernel para detectar bordes
+    // Define un kernel de detección de bordes para identificar áreas a colorear.
     int[][] kernel = {
         {-1, -1, -1},
         {-1,  8, -1},
         {-1, -1, -1}
     };
 
-    // Umbral para decidir si un píxel es un borde
-    int threshold = 50; // Ajusta este valor para un efecto más fuerte o más suave
+    // Umbral para identificar un borde.
+    int threshold = 50; // Ajusta este valor para un efecto más o menos intenso.
 
     for (int y = 1; y < height - 1; y++) {
         for (int x = 1; x < width - 1; x++) {
-            // Aplicar el kernel a la vecindad de 3x3
+            // Aplica el kernel sobre un área de 3x3 alrededor del píxel.
             int sum = 0;
             for (int ky = -1; ky <= 1; ky++) {
                 for (int kx = -1; kx <= 1; kx++) {
                     Color neighborColor = new Color(original.getRGB(x + kx, y + ky));
                     int brightness = (int)(0.299 * neighborColor.getRed() + 0.587 * neighborColor.getGreen() + 0.114 * neighborColor.getBlue());
-                    sum += brightness * kernel[ky + 1][kx + 1]; // Aplicar el kernel
+                    sum += brightness * kernel[ky + 1][kx + 1]; // Aplica el valor del kernel al brillo del píxel vecino.
                 }
             }
 
-            // Determinar si el valor calculado indica un borde
-            if (sum > threshold) { // Compara con el umbral
-                // Ajustar la lógica para definir un área más precisa para los labios
+            // Si el valor calculado es mayor que el umbral, se considera un borde.
+            if (sum > threshold) {
+                // Define un área específica de la imagen para aplicar el color de labios.
                 if (y > height * 3 / 4 && y < height * 7 / 8 && (x > width / 4 && x < (3 * width) / 4)) {
-                    // Aplicar el color de labios a la línea y a sus píxeles adyacentes para hacerla más gruesa
-                    for (int dy = -2; dy <= 2; dy++) { // Aumentamos el rango de -1 a 1 a -2 a 2
+                    // Aplica el color de labios a una región alrededor del borde detectado.
+                    for (int dy = -2; dy <= 2; dy++) {
                         for (int dx = -2; dx <= 2; dx++) {
-                            if (Math.abs(dx) + Math.abs(dy) <= 2) { // Se aplica a una región más amplia
+                            if (Math.abs(dx) + Math.abs(dy) <= 2) {
                                 int newX = x + dx;
                                 int newY = y + dy;
                                 if (newX >= 0 && newX < width && newY >= 0 && newY < height) {
@@ -237,14 +243,14 @@ private BufferedImage applyContour(BufferedImage original, Color lipColor) {
                         }
                     }
                 } else {
-                    contourImage.setRGB(x, y, original.getRGB(x, y)); // Mantener el color original
+                    contourImage.setRGB(x, y, original.getRGB(x, y)); // Mantiene el color original en otras áreas.
                 }
             } else {
-                contourImage.setRGB(x, y, original.getRGB(x, y)); // Mantener el color original
+                contourImage.setRGB(x, y, original.getRGB(x, y)); // Mantiene el color original si no es borde.
             }
         }
     }
-    return contourImage;
+    return contourImage; // Retorna la imagen con el contorno aplicado.
 }
 
 }
